@@ -1,4 +1,6 @@
+import java.util.Collection;
 import java.util.LinkedList;
+import java.util.List;
 
 public class Trajet {
     private int distance;
@@ -45,5 +47,23 @@ public class Trajet {
         this.clients = clients;
     }
 
+    public Collection<Client> getSegment(int i, int j){
+        LinkedList<Client> segment = new LinkedList<>();
 
+        for (int a=i;a < j; a++){
+            segment.add(clients.get(a));
+        }
+
+        return segment;
+    }
+
+    public void deleteSegment(int i, int j){
+        for (int a=i;a < j; a++){
+           clients.remove(a);
+        }
+    }
+
+    public void addSegment(int i, Collection<Client> segment){
+        clients.addAll(i, segment);
+    }
 }
