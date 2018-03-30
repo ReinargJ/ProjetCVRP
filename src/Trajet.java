@@ -19,8 +19,13 @@ public class Trajet {
         return distance;
     }
 
-    public void setDistance(int distance) {
-        this.distance = distance;
+    public void setDistance() {
+
+        //int totalDist = ;
+
+        for (int i =0; i<clients.size(); i++){
+            //TODO Ajouter calculer 2 a 2 des distances des clients
+        }
     }
 
     public int getDepotX() {
@@ -65,5 +70,9 @@ public class Trajet {
 
     public void addSegment(int i, Collection<Client> segment){
         clients.addAll(i, segment);
+    }
+
+    public int calculDistance(Client a, Client b){
+        return 0; //TODO ajouter cacul de distance
     }
 }
