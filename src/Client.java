@@ -32,4 +32,8 @@ public class Client {
     public void setQuantite(int quantite) {
         this.quantite = quantite;
     }
+
+    public int calculDistance(Client a){
+        return Math.abs(a.getX() - this.getX()) + Math.abs(a.getY() - this.getY());
+    }
 }

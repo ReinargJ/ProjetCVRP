@@ -15,8 +15,22 @@ public class Trajet {
         this.DepotX = DepotX;
         this.DepotY = DepotY;
         this.clients = clients;
+        this.quantiteTransport =0;
 
-        for(Iterator<Client> iter = ; )
+        Client tmp = null;
+
+        for (Iterator<Client> iter = clients.listIterator(); iter.hasNext();){
+            tmp = iter.next();
+
+            this.quantiteTransport += tmp.getQuantite();
+        }
+    }
+
+    public Trajet(int DepotX, int DepotY) {
+        this.DepotX = DepotX;
+        this.DepotY = DepotY;
+        this.clients = new LinkedList<Client>();
+        this.quantiteTransport =0;
     }
 
     public int getDistance() {
@@ -28,7 +42,7 @@ public class Trajet {
         int totalDist = 0;
 
         for (int i =0; i<clients.size()-1; i++){
-            totalDist += calculDistance(clients.get(i), clients.get(i+1));
+            totalDist += clients.get(i).calculDistance(clients.get(i+1));
         }
 
         this.distance = totalDist;
@@ -94,6 +108,11 @@ public class Trajet {
         }
     }
 
+    public void addClient(Client client){
+        clients.add(client);
+        quantiteTransport += client.getQuantite();
+    }
+
     public void addSegment(int i, Collection<Client> segment){
         clients.addAll(i, segment);
         for (int j = 0; j < segment.size(); j++) {
@@ -101,7 +120,4 @@ public class Trajet {
         }
     }
 
-    public int calculDistance(Client a, Client b){
-        return Math.abs(b.getX() - a.getX()) + Math.abs(b.getY() - a.getY());
-    }
 }
