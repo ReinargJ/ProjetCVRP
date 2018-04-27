@@ -1,12 +1,22 @@
 public class Client {
+    private int numClient;
     private int x;
     private int y;
     private int quantite;
 
-    public Client(int x, int y, int quantite) {
+    public Client(int numClient, int x, int y, int quantite) {
+        this.numClient = numClient;
         this.x = x;
         this.y = y;
         this.quantite = quantite;
+    }
+
+    public int getNumClient() {
+        return numClient;
+    }
+
+    public void setNumClient(int numClient) {
+        this.numClient = numClient;
     }
 
     public int getX() {

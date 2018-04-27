@@ -8,24 +8,38 @@ public class Graphe {
     private final int quantiteMaxCamion =  100;
     private Trajet trajetOpti;
     //private Trajet trajetCourant;
+    private Client depot;
 
-    private Client depot = new Client(0,0,0);
+    public Graphe(List<Client> clients, Client depot) {
+        this.clients = clients;
+        this.nonDesservi = clients;
+        this.depot = depot;
+    }
 
-    public void genererSolutionAleatoire() {
+    public List<Trajet> genererSolutionAleatoire() {
+        List<Trajet> solution = new LinkedList<>();
+
         while(nonDesservi.size() > 0){
             int r = (int)Math.random()*((nonDesservi.size() - 0)+1);
             Client currentClient = nonDesservi.get(r);
             nonDesservi.remove(r);
-            Trajet trajet = new Trajet(0, 0);
+            Trajet trajet = new Trajet(depot);
+            solution.add(trajet);
             trajet.addClient(currentClient);
-            Client closest;
+            Client closest = getClosest(nonDesservi,currentClient);;
 
-            do {
-                closest = getClosest(nonDesservi,currentClient);
+            while(closest!=null && nonDesservi.size()>0 && trajet.getQuantiteTransport() + closest.getQuantite() <=quantiteMaxCamion) {
+
                 trajet.addClient(closest);
                 currentClient = closest;
-            }while(trajet.getQuantiteTransport() + closest.getQuantite() <=quantiteMaxCamion);
+                nonDesservi.remove(closest);
+
+                closest = getClosest(nonDesservi,currentClient);
+            }
+            trajet.addClient(depot);
         }
+
+        return solution;
     }
 
     public Client getClosest(List<Client> clients, Client client){

@@ -5,15 +5,13 @@ import java.util.List;
 
 public class Trajet {
     private int distance;
-    private int DepotX;
-    private int DepotY;
+    private Client depot;
     private int quantiteTransport;
 
     private LinkedList<Client> clients;
 
-    public Trajet(int DepotX, int DepotY, LinkedList<Client> clients) {
-        this.DepotX = DepotX;
-        this.DepotY = DepotY;
+    public Trajet(Client depot, LinkedList<Client> clients) {
+        this.depot = depot;
         this.clients = clients;
         this.quantiteTransport =0;
 
@@ -26,10 +24,10 @@ public class Trajet {
         }
     }
 
-    public Trajet(int DepotX, int DepotY) {
-        this.DepotX = DepotX;
-        this.DepotY = DepotY;
+    public Trajet(Client depot) {
+        this.depot = depot;
         this.clients = new LinkedList<Client>();
+        this.clients.add(depot);
         this.quantiteTransport =0;
     }
 
@@ -46,22 +44,6 @@ public class Trajet {
         }
 
         this.distance = totalDist;
-    }
-
-    public int getDepotX() {
-        return DepotX;
-    }
-
-    public void setDepotX(int depotX) {
-        DepotX = depotX;
-    }
-
-    public int getDepotY() {
-        return DepotY;
-    }
-
-    public void setDepotY(int depotY) {
-        DepotY = depotY;
     }
 
     public LinkedList<Client> getClients() {
@@ -109,15 +91,24 @@ public class Trajet {
     }
 
     public void addClient(Client client){
+        if(clients.size()> 0){
+            calculAjoutDistance(client);
+        }
+
         clients.add(client);
         quantiteTransport += client.getQuantite();
     }
 
     public void addSegment(int i, Collection<Client> segment){
         clients.addAll(i, segment);
-        for (int j = 0; j < segment.size(); j++) {
+        for (int j = i; j < i+segment.size(); j++) {
             quantiteTransport += clients.get(j).getQuantite();
+            calculAjoutDistance(clients.get(j));
         }
+    }
+
+    public void calculAjoutDistance(Client nouveauClient){
+        this.distance += nouveauClient.calculDistance(clients.getLast());
     }
 
 }
