@@ -26,7 +26,7 @@ public class Graphe {
             Trajet trajet = new Trajet(depot);
             solution.add(trajet);
             trajet.addClient(currentClient);
-            Client closest = getClosest(nonDesservi,currentClient);;
+            Client closest = getClosest(nonDesservi,currentClient);
 
             while(closest!=null && nonDesservi.size()>0 && trajet.getQuantiteTransport() + closest.getQuantite() <=quantiteMaxCamion) {
 

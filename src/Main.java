@@ -35,9 +35,9 @@ public class Main {
         Client depot = clients.poll();
         Graphe graphe = new Graphe(clients, depot);
 
-       List<Trajet> res =  graphe.genererSolutionAleatoire();
-        System.out.println(res);
+        List<Trajet> res =  graphe.genererSolutionAleatoire();
 
+        Tabou tabou = new Tabou(10,res);
         
 
     }
