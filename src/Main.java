@@ -1,6 +1,7 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -35,9 +36,16 @@ public class Main {
         Client depot = clients.poll();
         Graphe graphe = new Graphe(clients, depot);
 
-        List<Trajet> res =  graphe.genererSolutionAleatoire();
+       Solution solutionInitiale =  graphe.genererSolutionAleatoire();
+        ArrayList voisins = new ArrayList();
+        try {
+            voisins = solutionInitiale.generateVoisins();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+        System.out.println(solutionInitiale);
 
-        Tabou tabou = new Tabou(10,res);
+        //Tabou tabou = new Tabou(10,voisins);
         
 
     }

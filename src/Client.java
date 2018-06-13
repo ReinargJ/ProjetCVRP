@@ -1,4 +1,4 @@
-public class Client {
+public class Client implements Cloneable{
     private int numClient;
     private int x;
     private int y;
@@ -45,5 +45,10 @@ public class Client {
 
     public int calculDistance(Client a){
         return Math.abs(a.getX() - this.getX()) + Math.abs(a.getY() - this.getY());
+    }
+
+    @Override
+    protected Client clone() throws CloneNotSupportedException {
+        return (Client)super.clone();
     }
 }

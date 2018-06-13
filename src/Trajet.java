@@ -3,7 +3,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-public class Trajet {
+public class Trajet implements Cloneable{
     private int distance;
     private Client depot;
     private int quantiteTransport;
@@ -74,7 +74,7 @@ public class Trajet {
         }
 
         return segment;
-}
+    }
 
     public void deleteSegment(int i, int j){
         int curr = i;
@@ -90,6 +90,15 @@ public class Trajet {
         }
     }
 
+    public void addClient(Client client, int position ){
+        if(clients.size()> 0){
+            calculAjoutDistance(client);
+        }
+
+        clients.add(position, client);
+        quantiteTransport += client.getQuantite();
+    }
+
     public void addClient(Client client){
         if(clients.size()> 0){
             calculAjoutDistance(client);
@@ -98,6 +107,8 @@ public class Trajet {
         clients.add(client);
         quantiteTransport += client.getQuantite();
     }
+
+
 
     public void addSegment(int i, Collection<Client> segment){
         clients.addAll(i, segment);
@@ -111,4 +122,9 @@ public class Trajet {
         this.distance += nouveauClient.calculDistance(clients.getLast());
     }
 
+    @Override
+    protected Trajet clone() throws CloneNotSupportedException {
+        this.clients = (LinkedList)this.getClients().clone();
+        return (Trajet)super.clone();
+    }
 }
