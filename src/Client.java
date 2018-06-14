@@ -44,11 +44,12 @@ public class Client implements Cloneable{
     }
 
     public int calculDistance(Client a){
-        return Math.abs(a.getX() - this.getX()) + Math.abs(a.getY() - this.getY());
+        return (int)Math.round(Math.hypot(a.getX() - this.getX(),a.getY() - this.getY()));
     }
 
     @Override
     protected Client clone() throws CloneNotSupportedException {
-        return (Client)super.clone();
+        Client c = new Client(this.numClient, this.x, this.y, this.quantite);
+        return c;
     }
 }

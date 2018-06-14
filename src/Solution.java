@@ -12,9 +12,7 @@ public class Solution implements Cloneable{
     public Solution(LinkedList<Trajet> trajets) {
         this.trajets = trajets;
 
-        trajets.forEach(t -> {
-            this.distance+=t.getDistance();
-        });
+        this.calculDistance();
     }
 
     public LinkedList<Trajet> getTrajets() {
@@ -33,7 +31,11 @@ public class Solution implements Cloneable{
         this.distance = distance;
     }
 
-
+    public void calculDistance(){
+        trajets.forEach(t -> {
+            this.distance+=t.getDistance();
+        });
+    }
 
     public ArrayList<Solution> generateVoisins() throws CloneNotSupportedException {
         ArrayList<Solution> voisins = new ArrayList();
@@ -41,16 +43,17 @@ public class Solution implements Cloneable{
         for (int i = 0; i < this.trajets.size(); i++) {
             Trajet trajet = this.trajets.get(i);
 
-            for (int j = 0; j < trajet.getClients().size(); j++) {
+            for (int j = 1; j < trajet.getClients().size()-1; j++) {
                 Client client = trajet.getClients().get(j);
 
                 for (int k = 0; k < this.trajets.size(); k++) {
                     Trajet trajetInsertion = this.trajets.get(k);
 
                     if(client.getQuantite() + trajetInsertion.getQuantiteTransport() <= 100){
-                        for(int l = 0; l< trajet.getClients().size(); l++){
-                            Client clientCourant = trajet.getClients().get(l);
+                        for(int l = 1; l< trajetInsertion.getClients().size()-1; l++){
+                            Client clientCourant = trajetInsertion.getClients().get(l);
 
+                            System.out.println(client.getNumClient() +" "+ clientCourant.getNumClient());
                             if(!client.equals(clientCourant)){
                                 try {
                                     Solution cloneSolution = (Solution)this.clone();
@@ -58,10 +61,14 @@ public class Solution implements Cloneable{
                                     Trajet oldTrajet = cloneSolution.getTrajets().get(i);
                                     Trajet insertTrajet = cloneSolution.getTrajets().get(k);
 
-                                    insertTrajet.addClient(client);
-                                    oldTrajet.getClients().remove(clientCourant);
+                                    insertTrajet.addClient(client, l);
+                                    oldTrajet.removeClient(client);
 
+                                    oldTrajet.calculDistanceTrajet();
+                                    insertTrajet.calculDistanceTrajet();
+                                    cloneSolution.calculDistance();
                                     voisins.add(cloneSolution);
+
                                 } catch (CloneNotSupportedException e) {
                                     e.printStackTrace();
                                 }
@@ -77,10 +84,21 @@ public class Solution implements Cloneable{
 
     }
 
+    private List<Trajet> cloneList(List<Trajet> list) {
+        try{
+            List<Trajet> clone = new LinkedList<Trajet>();
+            for (Trajet item : list) clone.add(item.clone());
+            return clone;
+        }catch (Exception e){
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
+    }
+
     @Override
-    protected Object clone() throws CloneNotSupportedException {
-        this.trajets = (LinkedList)this.trajets.clone();
-        return super.clone();
+    protected Solution clone() throws CloneNotSupportedException {
+        Solution s = new Solution((LinkedList)this.cloneList(this.trajets));
+        return s;
     }
 
     //TODO generer tous les voisins

@@ -1,7 +1,4 @@
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 public class Trajet implements Cloneable{
     private int distance;
@@ -22,6 +19,14 @@ public class Trajet implements Cloneable{
 
             this.quantiteTransport += tmp.getQuantite();
         }
+    }
+
+    public Trajet(Client depot, int distance, int quantiteTransport) {
+        this.depot = depot;
+        this.distance = distance;
+        this.clients = new LinkedList<Client>();
+        this.clients.add(depot);
+        this.quantiteTransport =quantiteTransport;
     }
 
     public Trajet(Client depot) {
@@ -91,17 +96,13 @@ public class Trajet implements Cloneable{
     }
 
     public void addClient(Client client, int position ){
-        if(clients.size()> 0){
-            calculAjoutDistance(client);
-        }
-
         clients.add(position, client);
         quantiteTransport += client.getQuantite();
     }
 
     public void addClient(Client client){
         if(clients.size()> 0){
-            calculAjoutDistance(client);
+            calculDistanceTrajet();
         }
 
         clients.add(client);
@@ -114,17 +115,41 @@ public class Trajet implements Cloneable{
         clients.addAll(i, segment);
         for (int j = i; j < i+segment.size(); j++) {
             quantiteTransport += clients.get(j).getQuantite();
-            calculAjoutDistance(clients.get(j));
+            calculDistanceTrajet();
         }
     }
 
-    public void calculAjoutDistance(Client nouveauClient){
-        this.distance += nouveauClient.calculDistance(clients.getLast());
+    public void removeClient(Client client){
+        this.clients.remove(client);
+        this.quantiteTransport -= client.getQuantite();
     }
 
+    public void calculDistanceTrajet(){
+        this.distance = 0;
+
+        for (int i = 1; i < clients.size(); i++) {
+            this.distance+=this.clients.get(i).calculDistance(this.clients.get(i-1));
+        }
+    }
+    public void calculDistanceTrajet(Client nouveauClient, int position){
+        this.distance += nouveauClient.calculDistance(clients.get(position));
+    }
+
+    private List<Client> cloneList(List<Client> list) {
+        try{
+            List<Client> clone = new LinkedList<Client>();
+            for (Client item : list) clone.add(item.clone());
+            return clone;
+        }catch (Exception e){
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
+    }
     @Override
     protected Trajet clone() throws CloneNotSupportedException {
-        this.clients = (LinkedList)this.getClients().clone();
-        return (Trajet)super.clone();
+        Trajet t = new Trajet(this.depot.clone(), this.distance, this.quantiteTransport);
+        t.setClients((LinkedList)this.cloneList(this.clients));
+
+        return t;
     }
 }

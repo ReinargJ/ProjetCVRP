@@ -1,6 +1,7 @@
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 
 public class Graphe {
     private List<Client> clients;
@@ -20,7 +21,7 @@ public class Graphe {
         LinkedList<Trajet> trajets = new LinkedList<>();
 
         while(nonDesservi.size() > 0){
-            int r = (int)Math.random()*((nonDesservi.size() - 0)+1);
+            int r = new Random().nextInt(nonDesservi.size());
             Client currentClient = nonDesservi.get(r);
             nonDesservi.remove(r);
             Trajet trajet = new Trajet(depot);
@@ -28,15 +29,16 @@ public class Graphe {
             trajet.addClient(currentClient);
             Client closest = getClosest(nonDesservi,currentClient);
 
-                while(closest!=null && nonDesservi.size()>0 && trajet.getQuantiteTransport() + closest.getQuantite() <=quantiteMaxCamion) {
-
-                    trajet.addClient(closest);
-                    currentClient = closest;
-                    nonDesservi.remove(closest);
+            while(closest!=null && nonDesservi.size()>0 && trajet.getQuantiteTransport() + closest.getQuantite() <=quantiteMaxCamion) {
+                trajet.addClient(closest);
+                currentClient = closest;
+                nonDesservi.remove(closest);
 
                 closest = getClosest(nonDesservi,currentClient);
             }
+
             trajet.addClient(depot);
+            trajet.calculDistanceTrajet();
         }
 
         return new Solution(trajets);
