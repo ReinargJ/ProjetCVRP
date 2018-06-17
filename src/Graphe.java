@@ -27,6 +27,37 @@ public class Graphe {
             Trajet trajet = new Trajet(depot);
             trajets.add(trajet);
             trajet.addClient(currentClient);
+            Client next = nonDesservi.get(0);
+
+            while(next!=null && nonDesservi.size()>0 && trajet.getQuantiteTransport() + next.getQuantite() <=quantiteMaxCamion) {
+                trajet.addClient(next);
+                nonDesservi.remove(0);
+
+                if(nonDesservi.size() >0){
+                    next = nonDesservi.get(0);
+                } else {
+                    next=null;
+                }
+
+            }
+
+            trajet.addClient(depot);
+            trajet.calculDistanceTrajet();
+        }
+
+        return new Solution(trajets);
+    }
+
+    public Solution genererSolutionAleatoireClosest() {
+        LinkedList<Trajet> trajets = new LinkedList<>();
+
+        while(nonDesservi.size() > 0){
+            int r = new Random().nextInt(nonDesservi.size());
+            Client currentClient = nonDesservi.get(r);
+            nonDesservi.remove(r);
+            Trajet trajet = new Trajet(depot);
+            trajets.add(trajet);
+            trajet.addClient(currentClient);
             Client closest = getClosest(nonDesservi,currentClient);
 
             while(closest!=null && nonDesservi.size()>0 && trajet.getQuantiteTransport() + closest.getQuantite() <=quantiteMaxCamion) {

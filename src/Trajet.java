@@ -152,4 +152,13 @@ public class Trajet implements Cloneable{
 
         return t;
     }
+
+    @Override
+    public boolean equals(Object o){
+        if(!(o instanceof Trajet)) return false;
+
+        Trajet t = (Trajet)o;
+
+        return t.distance == this.distance && t.quantiteTransport == this.quantiteTransport && this.clients.equals(t.clients);
+    }
 }

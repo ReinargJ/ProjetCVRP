@@ -13,10 +13,13 @@ public class Tabou {
 
     private int distanceOpti;
 
-    public Tabou(int tailleInterdits, LinkedList<Trajet> trajetsInitial) {
+    private ArrayList<Solution> listeTabou;
+
+    public Tabou(int tailleInterdits, Solution solutionInitiale) {
         this.tailleInterdits = tailleInterdits;
-        this.solutionOpti = new Solution(trajetsInitial);
+        this.solutionOpti = solutionInitiale;
         this.distanceOpti = this.solutionOpti.getDistance();
+        this.listeTabou = new ArrayList(this.tailleInterdits);
     }
 
     public int getTailleInterdits() {
@@ -43,22 +46,71 @@ public class Tabou {
         this.solutionOpti = solutionOpti;
     }
 
-    public List<Trajet> exectuerTabou(){
+    public Solution exectuerTabou(){
+
+        Solution localBestSolution = this.solutionOpti;
+
+        int i =0;
+        do {
+            try {
+                Boolean addToList = true;
+                ArrayList<Solution> voisins = localBestSolution.generateVoisins();
+                Solution currentBest = voisins.get(0);
+
+                for (int j = 0; j < voisins.size(); j++) {
+                    Solution voisin = voisins.get(j);
+
+                    if(voisin.getDistance() < this.solutionOpti.getDistance()){
+                        this.solutionOpti = voisin;
+                        currentBest = voisin;
+                        localBestSolution = voisin;
+                        addToList = false;
+                    }
+//                    else if(voisin.getDistance() < localBestSolution.getDistance()){
+//                        if(!(this.listeTabou.contains(voisin))) {
+//                            currentBest = voisin;
+//                            addToList = true;
+//                        }
+//                    }
+                }
+                if(addToList){
 
 
-        List<Trajet> solution = null;
-        //int tailleSegment = 2;
+                    Solution min=null;
+                    int a = 0;
 
-        Trajet trajet1;
-        Trajet trajet2;
-        for (Iterator<Trajet> iter = solutionOpti.getTrajets().listIterator(); iter.hasNext();) {
-            trajet1 = iter.next();
-            int debut = (int)Math.random()*(trajet1.getClients().size() - 1);
-            int fin = (int)Math.random()*(trajet1.getClients().size() - debut);
-            trajet1.getSegment(debut, fin);
+                    while(min == null){
+                        if(!this.listeTabou.contains(voisins.get(a))){
+                            min = voisins.get(a);
+                        }
+                    }
 
-        }
-            return solution;
+
+                    for(Solution v: voisins){
+                        if(min.getDistance()>= v.getDistance()){
+                            if(!this.listeTabou.contains(v)){
+                                min = v;
+                            }
+                        }
+                    }
+
+                    if(this.listeTabou.size() > this.tailleInterdits){
+                        this.listeTabou.remove(0);
+                    }
+
+                    this.listeTabou.add(min);
+                    currentBest = min;
+                }
+                localBestSolution = currentBest;
+
+            } catch (CloneNotSupportedException e) {
+                e.printStackTrace();
+            }
+
+            i++;
+        } while(i<2000);
+
+        return this.solutionOpti;
 
     }
 

@@ -52,4 +52,14 @@ public class Client implements Cloneable{
         Client c = new Client(this.numClient, this.x, this.y, this.quantite);
         return c;
     }
+
+    @Override
+    public boolean equals(Object o){
+        if(!(o instanceof Client)) return false;
+
+        Client c = (Client)o;
+
+        return c.numClient == this.numClient;
+
+    }
 }

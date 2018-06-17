@@ -36,17 +36,15 @@ public class Main {
         Client depot = clients.poll();
         Graphe graphe = new Graphe(clients, depot);
 
-       Solution solutionInitiale =  graphe.genererSolutionAleatoire();
-        ArrayList voisins = new ArrayList();
-        try {
-            voisins = solutionInitiale.generateVoisins();
-        } catch (CloneNotSupportedException e) {
-            e.printStackTrace();
-        }
-        System.out.println(solutionInitiale);
+       Solution solutionInitiale =  graphe.genererSolutionAleatoireClosest();
 
-        //Tabou tabou = new Tabou(10,voisins);
-        
 
+        System.out.println("Solution initiale: "+solutionInitiale.getDistance());
+        System.out.println("En cours...");
+        Tabou tabou = new Tabou(20,solutionInitiale);
+
+        Solution best = tabou.exectuerTabou();
+
+        System.out.println("done: "+best.getDistance());
     }
 }

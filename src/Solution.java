@@ -15,6 +15,10 @@ public class Solution implements Cloneable{
         this.calculDistance();
     }
 
+    public Solution(){
+        this.trajets = new LinkedList<>();
+    }
+
     public LinkedList<Trajet> getTrajets() {
         return trajets;
     }
@@ -32,6 +36,7 @@ public class Solution implements Cloneable{
     }
 
     public void calculDistance(){
+        this.distance =0;
         trajets.forEach(t -> {
             this.distance+=t.getDistance();
         });
@@ -53,17 +58,19 @@ public class Solution implements Cloneable{
                         for(int l = 1; l< trajetInsertion.getClients().size()-1; l++){
                             Client clientCourant = trajetInsertion.getClients().get(l);
 
-                            System.out.println(client.getNumClient() +" "+ clientCourant.getNumClient());
-                            if(!client.equals(clientCourant)){
+                            if(client.getNumClient() != clientCourant.getNumClient()){
                                 try {
                                     Solution cloneSolution = (Solution)this.clone();
 
                                     Trajet oldTrajet = cloneSolution.getTrajets().get(i);
                                     Trajet insertTrajet = cloneSolution.getTrajets().get(k);
 
-                                    insertTrajet.addClient(client, l);
-                                    oldTrajet.removeClient(client);
+                                    //System.out.println(insertTrajet.getClients().size());
 
+                                    oldTrajet.removeClient(client);
+                                    insertTrajet.addClient(client, l);
+
+                                    //System.out.println(insertTrajet.getClients().size());
                                     oldTrajet.calculDistanceTrajet();
                                     insertTrajet.calculDistanceTrajet();
                                     cloneSolution.calculDistance();
@@ -80,6 +87,7 @@ public class Solution implements Cloneable{
             }
         }
 
+        //System.out.println(voisins.size());
         return voisins;
 
     }
@@ -99,6 +107,14 @@ public class Solution implements Cloneable{
     protected Solution clone() throws CloneNotSupportedException {
         Solution s = new Solution((LinkedList)this.cloneList(this.trajets));
         return s;
+    }
+
+    public boolean equals(Object o){
+        if(!(o instanceof Solution)) return false;
+
+        Solution sol = (Solution)o;
+
+        return this.distance == sol.distance && this.trajets.equals(sol.trajets);
     }
 
     //TODO generer tous les voisins
