@@ -80,9 +80,11 @@ public class Tabou {
                     int a = 0;
 
                     while(min == null){
+
                         if(!this.listeTabou.contains(voisins.get(a))){
                             min = voisins.get(a);
                         }
+                        a++;
                     }
 
 
@@ -105,9 +107,10 @@ public class Tabou {
 
             } catch (CloneNotSupportedException e) {
                 e.printStackTrace();
+            } finally {
+                System.out.println(i+": "+this.solutionOpti.getDistance());
+                i++;
             }
-
-            i++;
         } while(i<2000);
 
         return this.solutionOpti;

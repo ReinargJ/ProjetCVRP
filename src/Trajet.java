@@ -135,6 +135,11 @@ public class Trajet implements Cloneable{
         this.distance += nouveauClient.calculDistance(clients.get(position));
     }
 
+
+    public Client getDepot() {
+        return depot;
+    }
+
     private List<Client> cloneList(List<Client> list) {
         try{
             List<Client> clone = new LinkedList<Client>();
