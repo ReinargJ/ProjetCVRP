@@ -6,8 +6,9 @@ public class Fourmis {
     private static Double[][] pheromone;
     private List<Client> clients;
     private List<Client> nonDesservi;
-    private final int quantiteMaxCamion =  100;
+    private final int QUANTITE_MAX =  100;
     private final int NB_FOURMI =100;
+    private final int NB_ITERATION=100;
     private Client depot;
 
     public Fourmis(int size, List<Client> clients, Client depot) {
@@ -25,7 +26,7 @@ public class Fourmis {
         int best = 99999999;
         Solution bestFourmi = new Solution();
 
-        for(int iteration = 1; iteration <= 2000; iteration++){
+        for(int iteration = 1; iteration <= NB_ITERATION; iteration++){
 
             ArrayList<Solution> fourmis = new ArrayList<>();
             for(int i = 0; i<NB_FOURMI; i++){
@@ -64,66 +65,59 @@ public class Fourmis {
         LinkedList<Trajet> trajets = solution.getTrajets();
 
         nonDesservi = cloneList(clients);
+        Trajet trajet = new Trajet(depot);
 
-        while(nonDesservi.size() > 0){
-            int r = new Random().nextInt(nonDesservi.size());
-            Client currentClient = nonDesservi.get(r);
-            nonDesservi.remove(r);
-            Trajet trajet = new Trajet(depot);
-            trajets.add(trajet);
-            trajet.addClient(currentClient);
+        int nbTrajet, quantiteTot=0;
 
-            int nbTrajet, quantiteTot=0;
+        for(Client client : clients){
+            quantiteTot += client.getQuantite();
+        }
 
-            for(Client client : clients){
-                quantiteTot += client.getQuantite();
-            }
+        nbTrajet = Math.floorDiv(quantiteTot,100);
 
-            nbTrajet = Math.floorDiv(quantiteTot,100);
 
+        for (int i = 0; i < nbTrajet; i++) {
+            trajets.add(new Trajet(depot));
+        }
+
+        Collections.shuffle(nonDesservi);
+        while(nonDesservi.size()>0)  {
+            Client next = nonDesservi.get(0);
+            HashMap<Double, Integer> choix = new HashMap<Double, Integer>();
 
             for (int i = 0; i < nbTrajet; i++) {
-                trajets.add(new Trajet(depot));
+                Trajet t = trajets.get(i);
+
+                Client precedent = t.getClients().getLast();
+                choix.put(Math.random() * pheromone[next.getNumClient()][precedent.getNumClient()], i);
             }
 
-            Collections.shuffle(nonDesservi);
-            while(nonDesservi.size()>0)  {
-                Client next = nonDesservi.get(0);
-                HashMap<Double, Integer> choix = new HashMap<Double, Integer>();
+            SortedSet<Double> keys = new TreeSet<Double>(choix.keySet());
+            boolean added = false;
 
-                for (int i = 0; i < nbTrajet; i++) {
-                    Trajet t = trajets.get(i);
-
-                    Client precedent = t.getClients().getLast();
-                    choix.put(Math.random() * pheromone[next.getNumClient()][precedent.getNumClient()], i);
-                }
-
-                SortedSet<Double> keys = new TreeSet<Double>(choix.keySet());
-                boolean added = false;
-
-                for(Double key : keys){
-                    if(!added){
-                        int numTrajet = choix.get(key);
-                        if (trajets.get(numTrajet).getQuantiteTransport()+next.getQuantite() <= quantiteMaxCamion){
-                            trajets.get(numTrajet).addClient(next);
-                            added = true;
-                        }
+            for(Double key : keys){
+                if(!added){
+                    int numTrajet = choix.get(key);
+                    if (trajets.get(numTrajet).getQuantiteTransport()+next.getQuantite() <= QUANTITE_MAX){
+                        trajets.get(numTrajet).addClient(next);
+                        added = true;
                     }
                 }
-                if(!added){
-                    Trajet newTrajet = new Trajet(depot);
-                    newTrajet.addClient(next);
-                    trajets.add(newTrajet);
-                    nbTrajet++;
-                }
-                nonDesservi.remove(0);
             }
-
-            for(Trajet t : trajets ){
-                t.addClient(depot);
-                t.calculDistanceTrajet();
+            if(!added){
+                Trajet newTrajet = new Trajet(depot);
+                newTrajet.addClient(next);
+                trajets.add(newTrajet);
+                nbTrajet++;
             }
+            nonDesservi.remove(0);
         }
+
+        for(Trajet t : trajets ){
+            t.addClient(depot);
+            t.calculDistanceTrajet();
+        }
+
         solution.calculDistance();
 
         return solution;
@@ -140,10 +134,8 @@ public class Fourmis {
             LinkedList<Client> clients = trajet.getClients();
 
             for (int i = 1; i < clients.size(); i++) {
-                Client client = clients.get(i);
+                Client c = clients.get(i);
 
-            }
-            for(Client c : trajet.getClients()){
                 pheromone[prec.getNumClient()][c.getNumClient()] *= mult;
                 pheromone[c.getNumClient()][prec.getNumClient()] *= mult;
                 prec = c;
@@ -166,10 +158,10 @@ public class Fourmis {
         for (int i = 0; i< pheromone[0].length; i++){
             for (int j = 0; j< pheromone[0].length; j++){
                 if(pheromone[i][j] > 1){
-                    pheromone[i][j] = ((pheromone[i][j] - 1) / 9) +1;
+                    pheromone[i][j] = ((pheromone[i][j] - 1) / 2) +1;
                 }
                 else if (pheromone[i][j] < 1){
-                    pheromone[i][j] = 1 - ((1 - pheromone[i][j]) / 9);
+                    pheromone[i][j] = 1 - ((1 - pheromone[i][j]));
                 }
 
             }
