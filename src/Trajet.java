@@ -166,4 +166,15 @@ public class Trajet implements Cloneable{
 
         return t.distance == this.distance && t.quantiteTransport == this.quantiteTransport && this.clients.equals(t.clients);
     }
+
+    @Override
+    public String toString() {
+        String s = " ";
+
+        for(Client client : clients){
+            s+= client.getNumClient() + " -> ";
+        }
+
+        return s;
+    }
 }

@@ -15,6 +15,8 @@ public class Tabou {
 
     private ArrayList<Solution> listeTabou;
 
+    private int NB_ITERATION = 1;
+
     public Tabou(int tailleInterdits, Solution solutionInitiale) {
         this.tailleInterdits = tailleInterdits;
         this.solutionOpti = solutionInitiale;
@@ -66,12 +68,6 @@ public class Tabou {
                         localBestSolution = voisin;
                         addToList = false;
                     }
-//                    else if(voisin.getDistance() < localBestSolution.getDistance()){
-//                        if(!(this.listeTabou.contains(voisin))) {
-//                            currentBest = voisin;
-//                            addToList = true;
-//                        }
-//                    }
                 }
                 if(addToList){
 
@@ -111,7 +107,7 @@ public class Tabou {
                 System.out.println(i+": "+this.solutionOpti.getDistance());
                 i++;
             }
-        } while(i<2000);
+        } while(i<NB_ITERATION);
 
         return this.solutionOpti;
 

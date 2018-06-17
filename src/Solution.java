@@ -117,6 +117,16 @@ public class Solution implements Cloneable{
         return this.distance == sol.distance && this.trajets.equals(sol.trajets);
     }
 
+    @Override
+    public String toString() {
+        String s ="";
+
+        for (Trajet trajet : trajets){
+            s+=trajet.toString()+"\n";
+        }
+        return s;
+    }
+
     //TODO generer tous les voisins
 
 

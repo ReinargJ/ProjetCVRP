@@ -34,17 +34,20 @@ public class Main {
         }
 
         Client depot = clients.poll();
+
+        Fourmis fourmis = new Fourmis(clients.size()+1, clients, depot);
+
         Graphe graphe = new Graphe(clients, depot);
 
        Solution solutionInitiale =  graphe.genererSolutionAleatoireClosest();
-
 
         System.out.println("Solution initiale: "+solutionInitiale.getDistance());
         System.out.println("En cours...");
         Tabou tabou = new Tabou(20,solutionInitiale);
 
         Solution best = tabou.exectuerTabou();
-
         System.out.println("done: "+best.getDistance());
+
+        fourmis.runFourmis();
     }
 }
